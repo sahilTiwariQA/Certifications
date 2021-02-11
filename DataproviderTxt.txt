@@ -1,0 +1,91 @@
+public class Submit
+{
+WebDriver driver= null;
+@DataProvider(name="test")
+public Object[][] getData()
+{
+Object[][] data= new Object[3][2];
+data[0][0]="abc@gmail.com";
+data[0][1]="password1";
+data[1][0]="xyz@ymail.com";
+data[1][1]="password2";
+data[3][0]="sap@rediff.com";
+data[3][1]="password3";
+return data;
+}
+@BeforeTest
+public void startMethod()
+{
+System.setProperty("webdriver.gecko.driver", "driverpath");
+driver=new FirefoxDriver();
+driver.get("url");
+driver.manage().window().maximize();
+driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+}
+@Test(dataProvider="test")
+public void test1(String username, String password)
+{
+driver.findElement(By.id("username")).sendKeys(username);
+driver.findElement(By.id("password")).sendKeys(password);
+driver.findElement(By.id("login")).click();
+}
+@Test(dependsOnMethods={"test1"})
+public void test2()
+{
+int noOfWindows=driver.getWindowHandles().size();
+System.out.println("Total windows opened is: "+noOfWindows);
+System.out.println("Title of opened page is: "+driver.getTitle());
+List<WebElement> webTable=driver.findElements(By.xpath("table_xpath"));
+for(WebElement row: webTable)
+{
+List<WebElement> cells=row.findElements(By.tagName("td"));
+for(WebElement cell:cells)
+{
+System.out.println(cell.getText());
+}
+}
+Select sel= new Select(driver.findElement(By.name("contentDD")));
+List<WebElement> options= sel.getOptions();
+for(WebElement item:options)
+{
+System.out.println("Available options in dropdown are"+item.getText());
+}
+Select quan= new Select(driver.findElement(By.name("quantityDD")));
+for(int i=0;i<=options.size();i++)
+{
+sel.selectByVisibleText(options.get(i).getText());
+quan.selectByIndex(2);
+driver.findElement(By.id("addItem")).click();
+}
+File file=new File("Filepath");
+FileInputStream input=new FileInputStream(file);
+WorkBook wb= new HSSFWorkBook(input);
+Sheet data=wb.getSheet("");
+int rowCount = sheet.getLastRowNum()-sheet.getFirstRowNum();
+Row row= sheet.getRow(0);
+Row newRow=Sheet.createRow(rowCount+1);
+for(int j=0;j<=row.getLastRowNum();j++)
+{
+Cell cell=newRow.createCell(j);
+}
+input.close();
+FileOutputStream outputStream= newFileOutputStream(file);
+wb.write(outputStream);
+outputStream.close();
+driver.findElement(By.id("Calculate total")).click();
+Alert alert= driver.switchTo().alert();
+System.out.println(alert.getText());
+alert.accept();
+}
+@Test(dependsOnMethods={"test2"})
+public void test3()
+{
+driver.findElement(By.xpath("xpathExpression")).click();
+}
+@AfterTest
+public void tearDown()
+{
+driver.close();
+driver.quit();
+}
+}
