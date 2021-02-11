@@ -1,0 +1,87 @@
+log4j complete:
+
+pom.xml
+=======
+<properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+    </dependencies>
+	
+==========================================================================
+
+log4j.java
+----------
+
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class Log4JDemo {
+    private static Logger logger = LogManager.getLogger(Log4JDemo.class);
+
+    public static void main(String[] args)
+    {
+        System.out.println("Hello world ! ...");
+
+        logger.info("This is Info");
+        logger.warn("This is Warn");
+        logger.error("This is Error");
+        logger.fatal("This is Fatal");
+        logger.trace("This is Trace");
+
+        System.out.println("Completed ! ...");
+    }
+}
+
+==============================================================================
+log4j2.properties
+-----------------
+
+name=PropertiesConfig
+property.filename = logs
+appenders = console, file
+
+appender.console.type = Console
+appender.console.name = STDOUT
+appender.console.layout.type = PatternLayout
+appender.console.layout.pattern = [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+
+
+appender.file.type = File
+appender.file.name = LOGFILE
+appender.file.fileName=${filename}/MyLogs.log
+appender.file.layout.type=PatternLayout
+appender.file.layout.pattern=[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+
+loggers=file
+logger.file.name=Demo
+logger.file.level = debug
+#logger.file.level = trace
+logger.file.appenderRefs = file
+logger.file.appenderRef.file.ref = LOGFILE
+
+rootLogger.level = debug
+#rootLogger.level = trace
+rootLogger.appenderRefs = stdout
+rootLogger.appenderRef.stdout.ref = STDOUT
+
+
