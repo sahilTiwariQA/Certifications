@@ -1,0 +1,121 @@
+		public class Example {	
+			WebDriver driver = null;
+
+		@DataProvider(name="test")
+		public Object[][] getData()
+		{
+		Object[][] data= new Object[2][3];
+		data[0][0]="Mushroom Pulao";
+		data[0][1]="Butter Paneer";
+		data[0][2]="7896564123";
+		data[1][0]="Vegetable Tahiri";
+		data[1][1]="Brussels Sprouts Curry";
+		data[1][2]="9874563210";
+		return data;
+		}
+
+		@Test(dataProvider="test")
+		public void test1(String mainDish, String curry, Long PhoneNo)
+		{
+		driver.findElement(By.id("username")).sendKeys(mainDish);
+		driver.findElement(By.id("password")).sendKeys(curry);
+		driver.findElement(By.id("password")).sendKeys(curry);
+		driver.findElement(By.id("Submit")).click();
+		}
+	
+	@Test
+	public void test() throws Exception {
+
+		//Setting up the driver property//
+		System.setProperty("webdriver.gecko.driver","driver location");
+		driver = new FirefoxDriver();
+
+		//Setting an implicit wait of 12 seconds//
+		driver.manage().timeouts().implicitlyWait(12, TimeUnit.SECONDS);
+
+		//Opening the Application URL//
+		driver.navigate().to("URL here");
+
+		//Maximizing the browser//
+		driver.manage().window().maximize();
+
+		//Put some Sleep with exception or no need 
+		Thread.sleep(5000);
+
+		//Button Click//
+		driver.findElement(By.xpath("element xpath here")).click();
+		
+		//Switching the driver to new window//
+		for(String handle : driver.getWindowHandles())
+		{
+			driver.switchTo().window(handle);
+		}
+
+		//Printing the new window url//
+		System.out.println(driver.getCurrentUrl());
+
+		//Checking the title of the page using Assert//
+		Assert.assertEquals("Bootstrap Example", driver.getTitle());
+
+		//Clicking on radio button//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Clicking Order now//
+		driver.findElement(By.xpath("xpath here")).click();
+		for(String handle : driver.getWindowHandles())
+		{
+			driver.switchTo().window(handle);
+		}
+		
+		//Clicking Home Delivery//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Taking inputs from excel sheet//
+		File file = new File("excel location");
+		FileInputStream input = new FileInputStream(file);
+		Workbook wb = new HSSFWorkbook(input);
+		Sheet data = wb.getSheet("Data");
+		Row row = data.getRow(1);
+		String type = row.getCell(0).getStringCellValue();
+		String maindish = row.getCell(1).getStringCellValue();
+		String curry = row.getCell(2).getStringCellValue();
+		int mobile = (int)row.getCell(3).getNumericCellValue();
+		String mob = Integer.toString(mobile);
+		
+		//pass the values 
+				Select webMaindish = new Select(driver.findElement(By.xpath("xpath here")));
+		webMaindish.selectByVisibleText(maindish);
+
+		Select webCurry = new Select(driver.findElement(By.xpath("xpath here")));
+		webCurry.selectByVisibleText(curry);
+
+		driver.findElement(By.xpath("xpath here")).sendKeys(mob);
+
+		//Clicking Submit//
+		driver.findElement(By.xpath("xpath here")).click();
+
+		//Handling alert box//
+		Alert alert = driver.switchTo().alert();
+
+		//Getting the alert text//
+		String msg = alert.getText();
+		System.out.println(msg);
+		alert.accept();
+		
+		//Writing the alert text to excel sheet//
+		row.getCell(4).setCellValue(msg);
+
+		//Screenshot//
+		TakeScreenshot screenshot = (TakeScreenshot) driver;
+		File scFile = screenshot.getScreenshotAs(OutputType.FILE);
+		File output = new File("screenshot destination location");
+		FileUtils.copyFile(scFile, output);
+		//Closing the browser//
+		driver.close();
+		//browser quit//
+		driver.quit();
+		}	
+	}
+}
+
+		

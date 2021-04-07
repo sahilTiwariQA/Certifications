@@ -1,0 +1,103 @@
+Testng.xml
+================
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Sample Test Suite">
+    
+    <test name="Test Automation">
+        <parameter name="contact" value="9876543210"/>
+		<parameter name="emailid" value="john@gmail.com"/>
+		<parameter name="tickets" value="3"/>
+        <classes>
+            <class name="test.java.FBLoginAndPostStatusMsg"></class>
+        </classes>
+    </test>
+</suite>
+
+=====================================
+@Parameters(value ={"contact","emailid","tickets"})
+@Test
+	public void test() throws Exception {
+
+		//Setting up the driver property//
+		System.setProperty("webdriver.gecko.driver","driver location");
+		driver = new FirefoxDriver();
+
+		//Setting an implicit wait of 12 seconds//
+		driver.manage().timeouts().implicitlyWait(12, TimeUnit.SECONDS);
+
+		//Opening the Application URL//
+		driver.navigate().to("URL here");
+
+		//Maximizing the browser//
+		driver.manage().window().maximize();
+
+		//Put some Sleep with exception or no need 
+		Thread.sleep(5000);
+
+		//Button Click//
+		driver.findElement(By.xpath("element xpath here")).click();
+		
+		//Switching the driver to new window//
+		for(String handle : driver.getWindowHandles())
+		{
+			driver.switchTo().window(handle);
+		}
+
+		//Printing the new window url//
+		System.out.println(driver.getCurrentUrl());
+
+//Clicking on radio button//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Table iteration and scroll down//
+		WebElement upcomingOffers = driver.findElement(By.xpath("xpath here"));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].scrollIntoView();", upcomingOffers);
+		WebElement table = driver.findElement(By.xpath("xpath here"));
+		List<WebElement> tRow = table.findElements(By.tagName("tr"));
+		for(WebElement item : tRow)
+		{
+			List<WebElement> tCol = item.findElements(By.tagName("td"));
+			System.out.println(tCol.get(1).getText());				
+		}
+		//Clicking link//
+		driver.findElement(By.xpath("xpath here")).click();
+
+			String Link = driver.findElement(By.xpath("xpath here"));
+			
+			if(link.getText().equals("Offer"))
+			{
+				System.out.println("It Matches");
+			}
+			else
+			{
+				System.out.println("It does not match");
+			}
+			
+			//Clicking events link//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Clicking Enterrtainment Checkbox//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Clicking on DID radio button//
+		driver.findElement(By.xpath("xpath here")).click();
+		
+		//Getting the alert text//
+		String msg = alert.getText();
+		System.out.println(msg);
+		alert.accept();
+		
+		//Switching the driver to new window//
+		for(String handle : driver.getWindowHandles())
+		{
+			driver.switchTo().window(handle);
+		}
+		
+		WebElement CCelement = driver.findElement(By.xpath("xpath here"));
+		CCelement.isDisabled();
+		
+		driver.findElement(By.id("username")).sendKeys(contact);
+		driver.findElement(By.id("password")).sendKeys(emailid);
+		driver.findElement(By.id("password")).sendKeys(tickets);
