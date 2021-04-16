@@ -1,0 +1,142 @@
+ Instructions to execute the demos:
+
+    For every demo described below, a SQL file is written and placed in the folder mentioned below
+    Go to the folder Desktop/user_repo/DemoFiles
+    To execute the demo follow the below steps:
+        Open the MySQL WorkBench from "Taskbar-->Programming-->MYSQL Workbench" (Refer below image)
+
+        Click on the + and enter following details:
+            Connection name: SQL Connection
+            Username: root
+            Click on 'Test Connection'
+        You will be prompted to enter password. Please enter 'root' in the password field and click on ok
+        You will be prompted with a pop up as below: (Incase you get a pop up for accepting connection, please press OK)
+
+        Click 'Ok' and click on close button.
+        Now double click on the SQL Connection, a query window will open for you and DB details displayed on the right side as shown in the below image:
+
+        Copy the query present in /root/Desktop/user_repo/DemoFiles/Demo.SQL (Demo.SQL will change according to the demo) and paste it in the query window.
+        Use the highlighted icon shown in the below image to execute your queries and observe the output in the 'Action output' area
+================
+ 
+ 
+ Demo 1:
+Write a query to get the day name of order_date as order_day and display the order_date, order_day, order_quqntity and country having order_date "2010-01-03".
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+SELECT  order_date, DAYNAME(order_date) order_day, order_quantity , country FROM Superstore where order_date="2010-01-03";
+===========
+Demo 2:
+Write a query to get the delivery_date for the order which is 5 days after order_date and display order_date, delivery_date, customer_id whose country is Japan.
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+SELECT  order_date,  ADDDATE(order_date,5) delivery_date , customer_id FROM Superstore where country="Japan";
+=========
+
+Demo 3:
+Write a query to concatenate the customer_id, customer_name, item and country as order_details with seperator ' ' and display the same for item "Avery Trapezoid Ring Binder, 3 INCH Capacity, Black, 1040 sheets"
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+SELECT CONCAT_WS(' ',customer_id,customer_name,item,country) order_details FROM Superstore where item="Avery Trapezoid Ring Binder, 3 INCH Capacity, Black, 1040 sheets";
+===========
+Demo 4: Write a query to convert order_priority to uppercase as upper_order_priority and display the upper_order_priority, discount_percentage, unit_price and customer_id of those customer whose order_date is "2010-05-01"
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+SELECT  UPPER(order_priority) upper_order_priority, discount_percentage, unit_price, customer_id FROM Superstore where order_date="2010-05-01";
+
+=============
+Demo 5: Create a stored procedure "Proc_1" which upon calling should display customer_id,customer_name of those customers who made least sum of profit.
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+drop procedure if exists Proc_1;
+
+DELIMITER $$
+create procedure Proc_1()
+begin
+select customer_id,customer_name from Superstore group by customer_name having sum(profit) =
+(select min(totalprofit) from (select sum(profit) totalprofit from Superstore group by customer_name) dummy);
+end$$
+DELIMITER ;
+call Proc_1();
+===============================
+Demo 6: Create a stored procedure "Proc_Intype" which has a "in" type parameter "total" of datatype byte which upon calling should display all details of orders ordered on same day and also having count of order date greater than the "total".
+Note: Follow the instructions mentioned above to execute the demo.
+(this shows error in byte datatype in sql workbench)
+
+use Eval_Superstore;
+drop procedure if exists Proc_Intype;
+
+DELIMITER $$
+create procedure Proc_Intype(in total byte)
+begin
+select * from Superstore where order_date in (select order_date from Superstore group by order_date having count(*)>total);
+end$$
+DELIMITER ;
+call Proc_Intype(3);
+
+========================
+Demo 7: Create a stored procedure with name Proc_Outtype which has a "out" type parameter "total" of datatype float which upon calling should display country,ordercount in descending order of total orders made. Upon calling "total" it should display totalprofit,customer_id,customer_name of a customer whose totalprofit is greater than thrice the maximum profit among all the orders.
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+drop procedure if exists Proc_Outtype;
+
+DELIMITER $$
+create procedure Proc_Outtype(out total float)
+begin
+select country,count(*) ordercount from Superstore group by country order by count(*) desc;
+
+select sum(profit) totalprofit,customer_id,customer_name into toal from Superstore group by customer_id,customer_name having sum(profit)>3*(select max(profit) from Superstore);
+end$$
+DELIMITER ;
+call Proc_Outtype(@total);
+select @total;
+
+==================
+Demo 8: Create a view with name View_1 which should display all details of orders where order_priority of "Not Specified" should be replaced with "Highly Critical".
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+drop view if exists View_1;
+
+create view View_1 as select row,order_date,discount_percentage,unit_price,order_quantity, sales, profit, shipping_cost, product_base_margin, item, customer_id, customer_name, country, 
+case
+when order_priority = "Not Specified" then "Highly Critical"
+else order_priority
+end as order_priority from Superstore;
+
+select * from View_1;
+
+=====================
+Demo 9: Create a view with name View_2 which should display all the customers who belongs to same country of order which has maximum profit.
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+drop view if exists View_2;
+
+create view View_2 as select * from Superstore where country = (select country from Superstore where profit = max(profit));
+
+select * from View_2;
+
+==============================
+Demo 10: Write a query to create a new temporary table called Substore that stores row,order_priority and country insert rows from the Superstore table into the temporary table Substore and display the order_priority and country whose order_priority is High and drop the temporary table.
+Note: Follow the instructions mentioned above to execute the demo.
+
+use Eval_Superstore;
+CREATE TEMPORARY TABLE Substore(
+    order_priority text,
+     country text
+);
+
+INSERT INTO Substore(order_priority,country)
+SELECT order_priority,country 
+FROM Superstore
+WHERE order_priority="High";
+
+select * from Substore;
+===============
