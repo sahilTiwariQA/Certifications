@@ -1,0 +1,115 @@
+public class Submit{
+WebDriver driver = null;
+
+@DataProvider(name = 'testData')
+public Object[][] getData()
+
+{
+Object[][] data = new Object[2][2];
+data[0][0] = '';
+data[0][0] = '';
+
+data[0][0] = '';
+data[0][0] = '';
+
+return data;
+}
+
+@Test(priority=0)
+ public void test(){
+ 
+ //Setting up the driver property//
+		System.setProperty("webdriver.gecko.driver","driver location");
+		driver = new FirefoxDriver();
+		
+		//Setting an implicit wait of 12 seconds//
+		driver.manage().timeouts().implicitlyWait(12, TimeUnit.SECONDS);
+
+		//Opening the Application URL//
+		driver.navigate().to("URL here");
+
+		//Maximizing the browser//
+		driver.manage().window().maximize();
+}
+
+@Test(priority = 1)
+public void add_mem() throws IOExcepton
+{
+
+driver.findElement(By.xpath("element xpath here")).click();
+
+//Taking inputs from excel sheet//
+		File file = new File("excel location");
+		FileInputStream input = new FileInputStream(file);
+		Workbook wb = new HSSFWorkbook(input);
+		Sheet data = wb.getSheet("Data");
+		Row row = data.getRow(1);
+		String firstName = row.getCell(0).getStringCellValue();
+		String lastName = row.getCell(1).getStringCellValue();
+		String email = row.getCell(2).getStringCellValue();
+		String empNum = row.getCell(3).getStringCellValue();
+		String selectStream = row.getCell(4).getStringCellValue();
+		
+		//Send Values
+		driver.findElement(By.xpath("xpath here")).sendKeys(firstName);
+		driver.findElement(By.xpath("xpath here")).sendKeys(lastName);
+		driver.findElement(By.xpath("xpath here")).sendKeys(email);
+		driver.findElement(By.xpath("xpath here")).sendKeys(empNum);
+		
+		Select selStream = new Select (driver.findElement(By.xpath("xpath here")));
+		selStream.selectByVisibleText(selectStream);
+		
+		driver.findElement(By.xpath("element xpath here")).click();
+		
+		//clicking on add member
+		driver.findElement(By.xpath("element xpath here")).click();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		
+		String SuccessMsg = driver.findElement(By.xpath("xpath here"));
+		
+		// writing success textto excel sheet//
+		row.getCell(5).setCellValue(SuccessMsg);
+		
+		//click on home link
+		driver.findElement(By.xpath("element xpath here")).click();
+}
+
+@Test(priority =2)
+@Parameters ({"type","pswd"})
+public void already_mem(String type, String pswd)
+{
+		driver.findElement(By.xpath("element xpath here")).click();
+		
+		driver.findElement(By.xpath("xpath here")).sendKeys(type);
+		driver.findElement(By.xpath("xpath here")).sendKeys(pswd);
+		
+		driver.findElement(By.xpath("element xpath here")).click();
+		WebElement element = driver.findElement(By.xpath("element xpath here"));
+
+		System.out.println(element.isEnabled());
+		
+}
+
+@Test(priority = 3, dataProvider='testData')
+public void add_course(String Course, String Role)
+{
+
+
+		Select selStream = new Select (driver.findElement(By.xpath("xpath here")));
+		selStream.selectByVisibleText(Course);
+		
+		
+		Select selStream = new Select (driver.findElement(By.xpath("xpath here")));
+		selStream.selectByVisibleText(Role);
+
+		driver.findElement(By.xpath("element xpath here")).click();
+
+//clicking sign out
+
+		driver.findElement(By.xpath("element xpath here")).click();
+		
+		//Closing the browser//
+		driver.close();
+		//browser quit//
+		driver.quit();
+}
